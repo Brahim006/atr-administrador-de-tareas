@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Administrador de TaReas</string>
+
+    <!-- Nombres para las pestañas de la actividad principal adicionales a la separación por
+         estado de la tarea. -->
+
+    <string name="tab_all">Todas</string>
+
+    <!-- Lista de estados válidos para las tareas, cada una debe corresponderse con un
+         código de un solo dígito -->
+
+    <string name="state_0">Pendiente</string>
+    <string name="state_1">En proceso</string>
+    <string name="state_2">Finalizado</string>
+
 </resources>
