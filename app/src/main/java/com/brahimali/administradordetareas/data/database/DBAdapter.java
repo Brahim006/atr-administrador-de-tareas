@@ -9,10 +9,17 @@ import com.brahimali.administradordetareas.data.Task;
 
 import java.util.ArrayList;
 
+/**
+ * Clase tipo adaptador para el manejo del acceso a la base de datos. Maneja un patrón singletton
+ * para asegurar que haya una instancia única por ejecución.
+ */
 public class DBAdapter {
 
     private TaskDBHelper dbHelper;
     private SQLiteDatabase db;
+
+    // Instancia para ser usada en un patrón Singleton
+    private static DBAdapter dbAdapter;
 
     // Tablas requeridas en las consultas a la base de datos. Se incluyean todas las necesarias
     // para la construcción de tareas.
@@ -23,13 +30,31 @@ public class DBAdapter {
     };
 
     /**
-     * Inicializa los recursos de la base de datos.
+     * Constructor privado para la obtención de instancias sólo a través del patrón singleton.
      * @param context El contexto de la actividad ó aplicación que hace uso del acceso a datos.
+     *                Se recomienda que provenga desde la actividad principal de la app.
      */
-    public DBAdapter(Context context){
+    private DBAdapter(Context context){
 
         dbHelper = new TaskDBHelper(context);
         db = dbHelper.getWritableDatabase();
+
+    }
+
+    /**
+     * Retorna una instancia única del adaptador para acceder a la base de datos. En caso de no
+     * existir dicha instancia, se crea a partir del contexto especificado.
+     * @param context Contexto del fragmento ó actividad en el que se desee hacer uso del acceso a
+     *                base de datos.
+     * @return Una instancia única del objeto {@link DBAdapter}.
+     */
+    public static DBAdapter getInstance(Context context){
+
+        if(dbAdapter == null){
+            dbAdapter = new DBAdapter(context);
+        }
+
+        return dbAdapter;
 
     }
 
@@ -39,6 +64,7 @@ public class DBAdapter {
      */
     public void closeDB(){
         db.close();
+        dbAdapter = null;
     }
 
     /**
@@ -210,9 +236,10 @@ public class DBAdapter {
     }
 
     /**
-     *
-     * @param title
-     * @param newStatus
+     * Cambia el estado de una tarea específica en la base de datos.
+     * @param title El título único de la tarea a la cual se quiere cambiarle el estado.
+     * @param newStatus El código del nuevo estado. Los estados disponibles están especificados en
+     *                  el archivo strings.xml o también dentro de la clase {@link Task}.
      */
     public void changeStatus(String title, int newStatus){
 
@@ -237,9 +264,9 @@ public class DBAdapter {
     }
 
     /**
-     *
-     * @param currentTitle
-     * @param newTitle
+     * Cambia el título de una tarea en la base de datos
+     * @param currentTitle El título actual.
+     * @param newTitle El nuevo título.
      */
     public void changeTitle(String currentTitle, String newTitle){
 
@@ -264,9 +291,9 @@ public class DBAdapter {
     }
 
     /**
-     *
-     * @param title
-     * @param newDescription
+     * Cambia la descripción de la tarea especificada en la base de datos.
+     * @param title El título único de la tarea a modificar.
+     * @param newDescription La nueva descripción.
      */
     public void changeDescription(String title, String newDescription){
 

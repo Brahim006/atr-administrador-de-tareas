@@ -11,7 +11,7 @@ public class Task {
 
     // Códigos de estados dsponibles.
     // Estos deben corresponderse con la cantidad provista en el archivo strings.xml
-    public static int[] VALID_STATES = {0,1,2};
+    public static int[] VALID_STATES = {1,2,3};
 
     public Task(String title, String description, int statusCode){
 
