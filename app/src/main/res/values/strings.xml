@@ -9,8 +9,17 @@
     <!-- Lista de estados válidos para las tareas, cada una debe corresponderse con un
          código de un solo dígito -->
 
-    <string name="state_0">Pendiente</string>
-    <string name="state_1">En proceso</string>
-    <string name="state_2">Finalizado</string>
+    <string name="state_1">Pendiente</string>
+    <string name="state_2">En proceso</string>
+    <string name="state_3">Finalizado</string>
+
+    <!-- Valores por defecto para los elementos de las tarjetas en las listas de tareas -->
+    <string name="card_title">Título</string>
+    <string name="card_description">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas viverra odio fermentum
+        enim feugiat, non venenatis eros ultrices. Vivamus varius pharetra leo id lobortis. Morbi
+        vestibulum congue magna eu condimentum.
+    </string>
+    <string name="card_state">Estado</string>
 
 </resources>

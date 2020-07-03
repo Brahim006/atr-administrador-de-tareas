@@ -3,4 +3,10 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <!-- Colores asociados a las pestañas y/o al estado de las tareas -->
+    <color name="pendantColor">#00FF00</color>
+    <color name="inProgressColor">#FBFF00</color>
+    <color name="finishedColor">#FF0000</color>
+
 </resources>

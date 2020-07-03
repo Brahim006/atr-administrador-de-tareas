@@ -59,6 +59,17 @@ public class DBAdapter {
     }
 
     /**
+     * Retorna una instancia única del adaptador para acceder a la base de datos siempre y cuando
+     * se haya instanciado alguna antes pasándo como parámetro algún contexto. Caso omiso retorna
+     * una referencia nula.
+     * @return Una instancia única del objeto {@link DBAdapter}, null si no se ha instanciado
+     *         ninguna antes en ningún contexto.
+     */
+    public static DBAdapter getInstance(){
+        return dbAdapter;
+    }
+
+    /**
      * Cierra el acceso a la base de datos. Este método está pensado para llamarse desde el método
      * onDestroy() de la actividad que haga uso del accesoa  datos.
      */
