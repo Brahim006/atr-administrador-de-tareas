@@ -17,8 +17,8 @@ public final class DBContract {
 
     // Queries
     public static final String CREATE_TASK_TABLE = "CREATE TABLE " + DBContract.TABLE_NAME +
-            "( " + DBContract.COLUMN_NAME_TITLE + " TEXT PRIMARY KEY, " +
-            DBContract.COLUMN_NAME_DESCRIPTION + " TEXT " +
+            " ( " + DBContract.COLUMN_NAME_TITLE + " TEXT PRIMARY KEY, " +
+            DBContract.COLUMN_NAME_DESCRIPTION + " TEXT, " +
             DBContract.COLUMN_NAME_STATUS_CODE + " INTEGER )";
 
 }
