@@ -22,4 +22,12 @@
     </string>
     <string name="card_state">Estado</string>
 
+    <!-- Actividad de añadido de tareas -->
+    <string name="add_task_title_hint">Añadir tarea:</string>
+    <string name="add_task_description_hint">Añade una descripción.</string>
+    <string name="add_task_state">Estado:</string>
+
+    <!-- Mensajes mostrados al usuarios en Toast ó Snackbars -->
+    <string name="adding_task_success">¡Tarea añadida!</string>
+
 </resources>
