@@ -65,6 +65,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
 
             @Override
             public void onClick(View v) {
+                // Borra la tarea de la base de datos
+                Task deletedTask = dataSet.get(position);
+                DBAdapter.getInstance().deleteTask(deletedTask.getTitle());
+                // Borra la tarea de la lista
                 dataSet.remove(position);
                 notifyDataSetChanged();
             }
