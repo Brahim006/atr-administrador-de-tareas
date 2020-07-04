@@ -44,8 +44,12 @@ public class TabFragment extends Fragment {
         recyclerView.setAdapter(taskListAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
-        // Color del fondo
-        switch (tabCode){
+        switch (tabCode){ // Color del fondo
+            case 0:
+                recyclerView.setBackgroundColor(
+                        container.getResources().getColor(R.color.allTasksColor)
+                );
+                break;
             case 1:
                 recyclerView.setBackgroundColor(
                         container.getResources().getColor(R.color.pendantColor)
