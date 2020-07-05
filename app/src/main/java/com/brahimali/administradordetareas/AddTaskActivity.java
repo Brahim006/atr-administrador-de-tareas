@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,35 +57,32 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                switch (item.getItemId()){ // Cambia el código de estado y el texto del botón
+                // Cambia el código de estado y el texto del botón
+                String newText = "";
+                switch (item.getItemId()){
                     case R.id.item_state_1:
                         newState = 1;
-                        selectStateButton.setText(
-                                getResources().getString(R.string.state_1)
-                        );
+                        newText = getResources().getString(R.string.state_1);
                         break;
                     case R.id.item_state_2:
                         newState = 2;
-                        selectStateButton.setText(
-                                getResources().getString(R.string.state_2)
-                        );
+                        newText = getResources().getString(R.string.state_2);
                         break;
                     case R.id.item_state_3:
                         newState = 3;
-                        selectStateButton.setText(
-                                getResources().getString(R.string.state_3)
-                        );
+                        newText = getResources().getString(R.string.state_3);
                         break;
                 }
 
+                selectStateButton.setText(newText);
                 return true;
 
             }
 
-        });
+        }); // fin listener
 
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.new_task_state_selector, popupMenu.getMenu());
+        inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
 
         popupMenu.show();
 
