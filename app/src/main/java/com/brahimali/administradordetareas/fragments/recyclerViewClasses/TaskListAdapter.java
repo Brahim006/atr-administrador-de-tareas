@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import com.brahimali.administradordetareas.AddTaskActivity;
 import com.brahimali.administradordetareas.MainActivity;
 import com.brahimali.administradordetareas.R;
 import com.brahimali.administradordetareas.data.Task;
@@ -24,15 +25,18 @@ import com.brahimali.administradordetareas.data.database.DBAdapter;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHolder> {
 
     private ArrayList<Task> dataSet;
-    private Context fragmentContext; // Contexto del fragmento asociado
+    private Context fragmentContext;
 
     /**
-     *
-     * @param fragmentContext
-     * @param tabCode
+     * Crea un adaptador para manejar los elementos de la lista en la que se muestran los datos.
+     * Está pensada para usarse dentro de un fragmento, por lo que se requiere usar el contexto de
+     * la actividad asociada.
+     * Ciertos parámetros están restrictos al código de tablas expuesto en {@link MainActivity}.
+     * @param fragmentContext El contexto de la actividad a la que está asociado el fragmento
+     *                        contenedor.
+     * @param tabCode El código de tabla que se representa.
      */
     public TaskListAdapter(Context fragmentContext, int tabCode){
-
         this.fragmentContext = fragmentContext;
 
         if(tabCode == 0){
@@ -43,7 +47,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             // Caso contrario, sólo se cargan las tareas del estado correspondiente
             dataSet = DBAdapter.getInstance(fragmentContext).getByStatus(tabCode);
         }
-
     }
 
     @NonNull
@@ -54,8 +57,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
         View taskItem = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_list_item, parent,false);
 
-        return new TaskHolder(taskItem); // Retorna el holder correspondiente a esa vista
+        return new TaskHolder(taskItem);
 
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataSet.size();
     }
 
     @Override
@@ -80,7 +88,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
                 DBAdapter.getInstance(fragmentContext).deleteTask(taskTitle);
                 // Borrado de la lista
                 dataSet.remove(position);
-                notifyDataSetChanged();
+                notifyItemRemoved(position);
             }
         });
 
@@ -101,29 +109,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
 
-                        String newText = "";
-                        int newState = 1;
+                        int newState = AddTaskActivity.DEFAULT_STATE;
+
                         switch (item.getItemId()){
-                            case R.id.item_state_1:
-                                newState = 1;
-                                newText = fragmentContext.getResources()
-                                        .getString(R.string.state_1);
-                                break;
+                            // El item 1 no necesita cambiar el valor por defecto, son lo mismo
                             case R.id.item_state_2:
                                 newState = 2;
-                                newText = fragmentContext.getResources()
-                                        .getString(R.string.state_2);
                                 break;
                             case R.id.item_state_3:
                                 newState = 3;
-                                newText = fragmentContext.getResources()
-                                        .getString(R.string.state_3);
                                 break;
                         }
 
                         DBAdapter.getInstance(fragmentContext)
-                                 .changeStatus(task.getTitle(), newState);
-                        holder.changeStateButton.setText(newText);
+                                 .changeStatus(task.getTitle(), newState);// Cambio en base de datos
+
+                        dataSet.get(position).setStatusCode(newState);
+                        notifyItemChanged(position); // Cambio en el dataSet
+
                         return true;
                     }
                 });
@@ -132,11 +135,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
         }); // fin listener
 
     } // fin onBindViewHolder
-
-    @Override
-    public int getItemCount() {
-        return dataSet.size();
-    }
 
     /**
      *  Holder que se encarga de generar las vistas para cada elemento de la lista.
