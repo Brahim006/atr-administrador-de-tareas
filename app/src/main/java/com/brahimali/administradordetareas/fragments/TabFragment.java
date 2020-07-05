@@ -38,7 +38,7 @@ public class TabFragment extends Fragment {
         recyclerView = (RecyclerView)v.findViewById(R.id.taskList);
 
         // Indica qué criterio debe usar cada RecyclerView para filtrar sus dataSets
-        taskListAdapter = new TaskListAdapter(tabCode);
+        taskListAdapter = new TaskListAdapter(getContext(), tabCode);
         layoutManager = new LinearLayoutManager(container.getContext());
 
         recyclerView.setAdapter(taskListAdapter);
