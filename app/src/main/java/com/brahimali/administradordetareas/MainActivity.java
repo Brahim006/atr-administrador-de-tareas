@@ -15,45 +15,53 @@ import com.brahimali.administradordetareas.fragments.TabAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-// TODO: Investigar la necesidad de heredar de la clase FragmentActivity
 public class MainActivity extends AppCompatActivity {
 
-    // Objetos para la gestión de pestañas
-    private TabAdapter tabAdapter;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
+    private ViewPager viewPager;    // Gestor de paginado de fragmentos
+    private TabAdapter tabAdapter;  // Adaptador para el viewPager
+    private TabLayout tabLayout;    // Layout para las pestañas
 
     private FloatingActionButton fab;
 
     public static final int DEFAULT_STATUS_CODE = 1;
 
-    // Nombre de las pestañas a mostrar en esta actividad
-    public static String[] validTabs;
-
-    // Request codes para iniciar actividades que devuelven resultados
+    // Códigos para las peticiones a otras actividades
     public static final int CREATE_TASK_REQUEST_CODE = 1;
+    public static final int EDIT_TASK_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fab = (FloatingActionButton)findViewById(R.id.addTaskFAB);
+        initGui(); // Inicializa los componentes
 
-        // Inicializa la base de datos en el contexto de esta actividad, la instancia perdura
-        // iniciada gracas al patrón singletton
+    }
+
+    /* Inicializa las vistas de la actividad */
+    private void initGui() {
+
+        // Inicializa la base de datos en este contexto, la instancia perdura iniciada gracias al
+        // patrón singletton
         DBAdapter.getInstance(this);
 
-        // Inicializacíon de modelo de pestañas
-        initValidTabs();
+        fab = (FloatingActionButton)findViewById(R.id.addTaskFAB);
+
         viewPager = (ViewPager)findViewById(R.id.viewPager);
         tabLayout = (TabLayout)findViewById(R.id.tabLayout);
-        tabAdapter= new TabAdapter(getSupportFragmentManager());
+        tabAdapter= new TabAdapter(getSupportFragmentManager(), this);
 
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-    } // fin onCreate
+    }
+
+    public void onClickAddTaskFAB(View view){ // Comportamiento del floating action button.
+
+        Intent intent = new Intent(this, ManipulateTaskActivity.class);
+        startActivityForResult(intent, CREATE_TASK_REQUEST_CODE);
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -66,50 +74,26 @@ public class MainActivity extends AppCompatActivity {
                 case CREATE_TASK_REQUEST_CODE:
                     // Crea una tarea con los datos enviados por la actividad de creación de tareas
                     // y la añade a la base de datos
-                    String newTitle = data.getStringExtra(AddTaskActivity.NEW_TASK_TITLE);
+                    String newTitle = data.getStringExtra(ManipulateTaskActivity.TASK_TITLE_IDENTIFIER);
                     String newDescription = data.getStringExtra
-                                            (AddTaskActivity.NEW_TASK_DESCRIPTION);
-                    int newStatusCode = data.getIntExtra(AddTaskActivity.NEW_TASK_STATE,
+                                            (ManipulateTaskActivity.TASK_DESCRIPTION_IDENTIFIER);
+                    int newStatusCode = data.getIntExtra(ManipulateTaskActivity.TASK_STATE_IDENTIFIER,
                                                          DEFAULT_STATUS_CODE);
 
                     Task newTask = new Task(newTitle, newDescription, newStatusCode);
 
                     DBAdapter.getInstance(this).insertTask(newTask);
 
+                    // TODO: Averiguar cómo notificar de estos cambios a los fragmentos
+                    // a través de un ViewModel.. ó de un FragmentManager...
+
                     String successMessage = getResources().getString(R.string.adding_task_success);
                     Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
-
-                    break;
+                break;
 
             }
 
         } // fin if
-
-    }
-
-    /*
-     * Comportamiento del floating action button.
-     */
-    public void onClickAddTaskFAB(View view){
-
-        Intent intent = new Intent(this, AddTaskActivity.class);
-        startActivityForResult(intent, CREATE_TASK_REQUEST_CODE);
-
-    }
-
-     // Sección con métodos privados para facilitar la lectura del código
-
-    /**
-     * Inicializa el arreglo que contiene el nombre de las pestañas a crear.
-     */
-    private void initValidTabs(){
-
-        validTabs = new String[]{
-                getResources().getString(R.string.tab_all),
-                getResources().getString(R.string.state_1),
-                getResources().getString(R.string.state_2),
-                getResources().getString(R.string.state_3)
-        };
 
     }
 

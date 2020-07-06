@@ -18,8 +18,7 @@ public class DBAdapter {
     private TaskDBHelper dbHelper;
     private SQLiteDatabase db;
 
-    // Instancia para ser usada en un patrón Singleton
-    private static DBAdapter dbAdapter;
+    private static DBAdapter dbAdapter; // Instancia para ser usada en un patrón Singleton
 
     // Tablas requeridas en las consultas a la base de datos. Se incluyean todas las necesarias
     // para la construcción de tareas.
@@ -40,6 +39,8 @@ public class DBAdapter {
         db = dbHelper.getWritableDatabase();
 
     }
+
+    private DBAdapter(){} // Evita una instanciación sin contexto de la base de datos
 
     /**
      * Retorna una instancia única del adaptador para acceder a la base de datos. En caso de no

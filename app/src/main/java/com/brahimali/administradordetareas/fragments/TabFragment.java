@@ -2,6 +2,7 @@ package com.brahimali.administradordetareas.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,18 +15,12 @@ import com.brahimali.administradordetareas.R;
 import com.brahimali.administradordetareas.fragments.recyclerViewClasses.TaskListAdapter;
 
 /**
- * Fragmento que sirve de modelo para crar cada una de las pestañas.
+ * Fragmento contenedor del modelo para cada una de las pestañas.
  */
 public class TabFragment extends Fragment {
 
-    // Elementos de lista
-    private RecyclerView recyclerView;
-    private TaskListAdapter taskListAdapter;
-    private RecyclerView.LayoutManager layoutManager;
-
-    public TabFragment() {
-        // Constructor nulo requerido
-    }
+    private RecyclerView recyclerView;      // Distribución tipo lista reciclable
+    private TaskListAdapter taskListAdapter;// Adaptador para la creacción de elementos de la lista
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,39 +31,44 @@ public class TabFragment extends Fragment {
         int tabCode = getArguments().getInt(TabAdapter.TAB_NUM_REFERENCE);
 
         recyclerView = (RecyclerView)v.findViewById(R.id.taskList);
-
         // Indica qué criterio debe usar cada RecyclerView para filtrar sus dataSets
-        taskListAdapter = new TaskListAdapter(getContext(), tabCode);
-        layoutManager = new LinearLayoutManager(container.getContext());
+        taskListAdapter = new TaskListAdapter(this, tabCode);
 
         recyclerView.setAdapter(taskListAdapter);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));// Distribución lineal
 
-        switch (tabCode){ // Color del fondo
-            case 0:
-                recyclerView.setBackgroundColor(
-                        container.getResources().getColor(R.color.allTasksColor)
-                );
-                break;
-            case 1:
-                recyclerView.setBackgroundColor(
-                        container.getResources().getColor(R.color.pendantColor)
-                );
-                break;
-            case 2:
-                recyclerView.setBackgroundColor(
-                        container.getResources().getColor(R.color.inProgressColor)
-                );
-                break;
-            case 3:
-                recyclerView.setBackgroundColor(
-                        container.getResources().getColor(R.color.finishedColor)
-                );
-                break;
-        }
+        setFragmentBackgroundColor(tabCode);
 
         return v;
 
     } // fin onCreateView
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Método a usar para restaurar el fragmento
+
+    }
+
+    /* Determina el color de fondo del fragmento */
+    private void setFragmentBackgroundColor(int tabCode){
+
+        int colorCode = R.color.allTasksColor;
+
+        switch (tabCode){ // Color del fondo
+            case 1:
+                colorCode = R.color.pendantColor;
+                break;
+            case 2:
+                colorCode = R.color.inProgressColor;
+                break;
+            case 3:
+                colorCode = R.color.finishedColor;
+                break;
+        }
+
+        recyclerView.setBackgroundColor(getResources().getColor(colorCode));
+    }
 
 }

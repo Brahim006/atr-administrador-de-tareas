@@ -11,13 +11,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
-/**
- * Actividad que se encarga de añadir nuevas tareas a la base de datos y a las listas.
- */
-public class AddTaskActivity extends AppCompatActivity {
+import com.brahimali.administradordetareas.utils.TabNamer;
 
-    private EditText newTaskTitle;
-    private EditText newTaskDescription;
+/**
+ * Actividad que se encarga de añadir nuevas tareas ó editar las ya existentes, está pensada para
+ * ser invocada esperando resultados a través de intents.
+ */
+public class ManipulateTaskActivity extends AppCompatActivity {
+
+    private EditText taskTitle;
+    private EditText taskDescription;
     private Button selectStateButton;
     private Button addTaskButton;
 
@@ -26,18 +29,18 @@ public class AddTaskActivity extends AppCompatActivity {
 
     public static final int DEFAULT_STATE = 1;
 
-    // Identificadores de las variables retornadas a la actividad principal
-    public static final String NEW_TASK_TITLE = "new task title";
-    public static final String NEW_TASK_DESCRIPTION = "new task description";
-    public static final String NEW_TASK_STATE = "new task state code";
+    // Identificadores de las variables retornadas a las actividades de llamada
+    public static final String TASK_TITLE_IDENTIFIER = "task title";
+    public static final String TASK_DESCRIPTION_IDENTIFIER = "task description";
+    public static final String TASK_STATE_IDENTIFIER = "task state code";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
-        newTaskTitle = (EditText)findViewById(R.id.newTaskTitle);
-        newTaskDescription = (EditText)findViewById(R.id.newTaskDescription);
+        taskTitle = (EditText)findViewById(R.id.newTaskTitle);
+        taskDescription = (EditText)findViewById(R.id.newTaskDescription);
         selectStateButton = (Button)findViewById(R.id.selectStateButton);
         addTaskButton = (Button)findViewById(R.id.addTasKButton);
 
@@ -50,6 +53,8 @@ public class AddTaskActivity extends AppCompatActivity {
     public void onClickStateButton(View view){
 
         PopupMenu popupMenu = new PopupMenu(this, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
 
         // Lógica del PopUp Menu
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -57,32 +62,25 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                // Cambia el código de estado y el texto del botón
-                String newText = "";
+                int statusCode = DEFAULT_STATE;
+
                 switch (item.getItemId()){
-                    case R.id.item_state_1:
-                        newState = 1;
-                        newText = getResources().getString(R.string.state_1);
-                        break;
                     case R.id.item_state_2:
-                        newState = 2;
-                        newText = getResources().getString(R.string.state_2);
+                        statusCode = 2;
                         break;
                     case R.id.item_state_3:
-                        newState = 3;
-                        newText = getResources().getString(R.string.state_3);
+                        statusCode = 3;
                         break;
                 }
 
-                selectStateButton.setText(newText);
+                newState = statusCode;
+                selectStateButton.setText(TabNamer.getValidTabName(getApplicationContext(),
+                                                                   statusCode));
                 return true;
 
             }
 
         }); // fin listener
-
-        MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
 
         popupMenu.show();
 
@@ -90,14 +88,14 @@ public class AddTaskActivity extends AppCompatActivity {
 
     public void onClickAddTaskButton(View view){
 
-        String title = newTaskTitle.getText().toString();
-        String description = newTaskDescription.getText().toString();
+        String title = taskTitle.getText().toString();
+        String description = taskDescription.getText().toString();
 
         Intent returnedArgs = new Intent();
 
-        returnedArgs.putExtra(NEW_TASK_TITLE, title);
-        returnedArgs.putExtra(NEW_TASK_DESCRIPTION, description);
-        returnedArgs.putExtra(NEW_TASK_STATE, newState);
+        returnedArgs.putExtra(TASK_TITLE_IDENTIFIER, title);
+        returnedArgs.putExtra(TASK_DESCRIPTION_IDENTIFIER, description);
+        returnedArgs.putExtra(TASK_STATE_IDENTIFIER, newState);
 
         // Retorna los resultados a la actividad principal
         setResult(RESULT_OK, returnedArgs);
