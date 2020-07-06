@@ -79,6 +79,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
 
         holder.stateView.setText(state);
 
+        // TODO: Investigar cómo notificar a los fragments hermanos
+
         // Lógica del botón de borrado de tareas
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +94,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             }
         });
 
-        //  TODO: asignarle el comportamiento al botón editButton para que inicie una nueva
-        //  actividad for result, cuando la actividad de edición esté diseñada
+        //  Lógica para el botón de edición de tareas
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO: buscar cómo iniciar una activityForResult acá
+            }
+
+        }); // fin listener
 
         // Lógica del botón de cambio de estado
         holder.changeStateButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 // Creación del menú contextual para la selección del nuevo estado, la idea
@@ -130,6 +140,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
                         return true;
                     }
                 });
+
+                popupMenu.show();
 
             }
         }); // fin listener
