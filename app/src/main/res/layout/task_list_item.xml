@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent" >
 
-    <!-- TODO: Ordenar este error de la naturaleza -->
+    <!-- TODO: Ordenar este error de la naturaleza, revisar el diseño porque se ve horrible -->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/task_cardView"
