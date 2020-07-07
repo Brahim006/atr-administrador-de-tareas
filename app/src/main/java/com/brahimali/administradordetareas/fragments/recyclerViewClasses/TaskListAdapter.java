@@ -1,5 +1,6 @@
 package com.brahimali.administradordetareas.fragments.recyclerViewClasses;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +28,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
 
     private ArrayList<Task> dataSet;
     private Fragment parentFragment;
+
+    public static final String EDITING_TASK_POSITION = "editing task position";
 
     /**
      * Crea un adaptador para manejar los elementos de la lista en la que se muestran los datos.
@@ -100,6 +103,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             @Override
             public void onClick(View v) {
                 // TODO: buscar cómo iniciar una activityForResult acá
+                Intent intent = new Intent(parentFragment.getContext(),
+                                           ManipulateTaskActivity.class);
+
+                intent.putExtra(ManipulateTaskActivity.TASK_TITLE_IDENTIFIER, task.getTitle());
+                intent.putExtra(ManipulateTaskActivity.TASK_DESCRIPTION_IDENTIFIER,
+                                task.getDescription());
+                intent.putExtra(ManipulateTaskActivity.TASK_STATE_IDENTIFIER, task.getStatusCode());
+                // Envía la posición de la tarea dentro del dataSet
+                intent.putExtra(EDITING_TASK_POSITION, position);
+
+                parentFragment.startActivityForResult(intent, MainActivity.EDIT_TASK_REQUEST_CODE);
+
             }
         });
 
@@ -170,5 +185,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             changeStateButton = (Button)itemView.findViewById(R.id.change_state_button);
         }
     } // fin clase TaskHolder
+
+    // Getter para el dataSet
+    public ArrayList<Task> getDataSet(){
+        return dataSet;
+    }
 
 }

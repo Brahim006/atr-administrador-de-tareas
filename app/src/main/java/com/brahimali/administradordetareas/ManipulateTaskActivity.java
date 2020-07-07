@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
+import com.brahimali.administradordetareas.data.database.DBAdapter;
+import com.brahimali.administradordetareas.fragments.recyclerViewClasses.TaskListAdapter;
 import com.brahimali.administradordetareas.utils.TabNamer;
 
 /**
@@ -25,7 +27,9 @@ public class ManipulateTaskActivity extends AppCompatActivity {
     private Button addTaskButton;
 
     // Almacena el código de estado de la nueva tarea, puede ser manipulado por el popUp menu
-    private int newState;
+    private int taskState;
+    // Las tareas que se editan vienen con su posición en el dataset
+    private int taskPosition;
 
     public static final int DEFAULT_STATE = 1;
 
@@ -39,13 +43,26 @@ public class ManipulateTaskActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
+        initGui();
+
+        taskState = getIntent().getIntExtra(TASK_STATE_IDENTIFIER, DEFAULT_STATE);
+        // El valor -1 significa que es una tarea nueva, ya que no tiene posición todavía
+        taskPosition = getIntent().getIntExtra(TaskListAdapter.EDITING_TASK_POSITION, -1);
+
+        // Si no se ha enviado información de ninguna tarea, significa que se está creando una
+        if(taskPosition != -1){
+            taskTitle.setText(getIntent().getStringExtra(TASK_TITLE_IDENTIFIER));
+            taskDescription.setText(getIntent().getStringExtra(TASK_DESCRIPTION_IDENTIFIER));
+            selectStateButton.setText(TabNamer.getValidTabName(this, taskState));
+        }
+
+    }
+
+    private void initGui(){
         taskTitle = (EditText)findViewById(R.id.newTaskTitle);
         taskDescription = (EditText)findViewById(R.id.newTaskDescription);
         selectStateButton = (Button)findViewById(R.id.selectStateButton);
         addTaskButton = (Button)findViewById(R.id.addTasKButton);
-
-        newState = DEFAULT_STATE;
-
     }
 
     // Lógica de los botones
@@ -73,7 +90,7 @@ public class ManipulateTaskActivity extends AppCompatActivity {
                         break;
                 }
 
-                newState = statusCode;
+                taskState = statusCode;
                 selectStateButton.setText(TabNamer.getValidTabName(getApplicationContext(),
                                                                    statusCode));
                 return true;
@@ -95,9 +112,16 @@ public class ManipulateTaskActivity extends AppCompatActivity {
 
         returnedArgs.putExtra(TASK_TITLE_IDENTIFIER, title);
         returnedArgs.putExtra(TASK_DESCRIPTION_IDENTIFIER, description);
-        returnedArgs.putExtra(TASK_STATE_IDENTIFIER, newState);
+        returnedArgs.putExtra(TASK_STATE_IDENTIFIER, taskState);
 
-        // Retorna los resultados a la actividad principal
+        if(taskPosition != -1){
+            returnedArgs.putExtra(TaskListAdapter.EDITING_TASK_POSITION, taskPosition);
+            // Se borra la tarea modificada antes de que se cargue la tarea con nuevos datos
+            DBAdapter.getInstance(this).deleteTask(
+                    getIntent().getStringExtra(TASK_TITLE_IDENTIFIER)
+            );
+        }
+
         setResult(RESULT_OK, returnedArgs);
         finish();
 

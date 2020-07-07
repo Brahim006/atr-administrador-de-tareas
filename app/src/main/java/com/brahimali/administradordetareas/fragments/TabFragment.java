@@ -1,5 +1,6 @@
 package com.brahimali.administradordetareas.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,7 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.brahimali.administradordetareas.MainActivity;
+import com.brahimali.administradordetareas.ManipulateTaskActivity;
 import com.brahimali.administradordetareas.R;
+import com.brahimali.administradordetareas.data.Task;
+import com.brahimali.administradordetareas.data.database.DBAdapter;
 import com.brahimali.administradordetareas.fragments.recyclerViewClasses.TaskListAdapter;
 
 /**
@@ -49,6 +54,37 @@ public class TabFragment extends Fragment {
 
         // Método a usar para restaurar el fragmento
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == getActivity().RESULT_OK){
+            switch (requestCode){
+                case MainActivity.EDIT_TASK_REQUEST_CODE:
+                    // Creación del objeto con datos ya editados
+                    String editedTitle = data.getStringExtra(ManipulateTaskActivity
+                                                             .TASK_TITLE_IDENTIFIER);
+                    String editedDescription = data.getStringExtra(ManipulateTaskActivity
+                                                                   .TASK_DESCRIPTION_IDENTIFIER);
+                    int editedState = data.getIntExtra(ManipulateTaskActivity
+                                                       .TASK_STATE_IDENTIFIER, 0);
+
+                    Task editedTask = new Task(editedTitle, editedDescription, editedState);
+
+                    // Actualización en la base de datos
+                    DBAdapter.getInstance(getContext()).insertTask(editedTask);
+
+                    int position = data.getIntExtra(TaskListAdapter.EDITING_TASK_POSITION, 0);
+                    // Actualización del recyclerview
+                    taskListAdapter.getDataSet().remove(position);
+                    taskListAdapter.getDataSet().add(position, editedTask);
+                    taskListAdapter.notifyItemChanged(position);
+
+                    break;
+            }
+        }
     }
 
     /* Determina el color de fondo del fragmento */
