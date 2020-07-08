@@ -12,12 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.brahimali.administradordetareas.MainActivity;
-import com.brahimali.administradordetareas.ManipulateTaskActivity;
+import com.brahimali.administradordetareas.gui.MainActivity;
+import com.brahimali.administradordetareas.gui.ManipulateTaskActivity;
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.data.Task;
-import com.brahimali.administradordetareas.data.database.DBAdapter;
-import com.brahimali.administradordetareas.fragments.recyclerViewClasses.TaskListAdapter;
+import com.brahimali.administradordetareas.database.Task;
+import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
 
 /**
  * Fragmento contenedor del modelo para cada una de las pestañas.

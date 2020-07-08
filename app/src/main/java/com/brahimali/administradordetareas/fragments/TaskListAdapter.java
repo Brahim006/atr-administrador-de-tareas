@@ -1,4 +1,4 @@
-package com.brahimali.administradordetareas.fragments.recyclerViewClasses;
+package com.brahimali.administradordetareas.fragments;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -17,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import com.brahimali.administradordetareas.ManipulateTaskActivity;
-import com.brahimali.administradordetareas.MainActivity;
+import com.brahimali.administradordetareas.gui.ManipulateTaskActivity;
+import com.brahimali.administradordetareas.gui.MainActivity;
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.data.Task;
-import com.brahimali.administradordetareas.data.database.DBAdapter;
+import com.brahimali.administradordetareas.database.Task;
+import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
 import com.brahimali.administradordetareas.utils.TabNamer;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHolder> {
@@ -102,7 +102,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: buscar cómo iniciar una activityForResult acá
+
                 Intent intent = new Intent(parentFragment.getContext(),
                                            ManipulateTaskActivity.class);
 

@@ -1,4 +1,4 @@
-package com.brahimali.administradordetareas;
+package com.brahimali.administradordetareas.gui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
-import com.brahimali.administradordetareas.data.database.DBAdapter;
-import com.brahimali.administradordetareas.fragments.recyclerViewClasses.TaskListAdapter;
+import com.brahimali.administradordetareas.R;
+import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
+import com.brahimali.administradordetareas.fragments.TaskListAdapter;
 import com.brahimali.administradordetareas.utils.TabNamer;
 
 /**

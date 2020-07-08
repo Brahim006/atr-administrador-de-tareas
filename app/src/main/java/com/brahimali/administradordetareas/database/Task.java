@@ -1,7 +1,7 @@
 /**
  * Objeto que representa a una tarea programada.
  */
-package com.brahimali.administradordetareas.data;
+package com.brahimali.administradordetareas.database;
 
 public class Task {
 

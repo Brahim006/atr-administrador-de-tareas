@@ -10,6 +10,9 @@
     <color name="inProgressColor">#D3E23D</color>
     <color name="finishedColor">#D11E1E</color>
 
-    <color name="slightlyBlack">#181818</color>
+    <color name="darkColor">#162521</color>
+    <color name="opaqueBlueColor">#587291</color>
+    <color name="aquamarineColor">#BEE3DB</color>
+    <color name="pencilYellowColor">#F6C728</color>
 
 </resources>

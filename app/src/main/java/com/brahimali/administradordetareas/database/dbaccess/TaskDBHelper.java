@@ -1,7 +1,7 @@
 /**
  * Helper para la creación de la base de datos SQLite.
  */
-package com.brahimali.administradordetareas.data.database;
+package com.brahimali.administradordetareas.database.dbaccess;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

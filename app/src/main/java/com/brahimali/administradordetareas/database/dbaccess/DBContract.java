@@ -2,7 +2,7 @@
  * Clase tipo Contract que contiene las constanstes usadas para definir la base de datos.
  * (Este patrón de diseño es recomendado por Google en su guía de desarrollo Android)
  */
-package com.brahimali.administradordetareas.data.database;
+package com.brahimali.administradordetareas.database.dbaccess;
 
 public final class DBContract {
 

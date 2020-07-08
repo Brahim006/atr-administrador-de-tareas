@@ -1,11 +1,11 @@
-package com.brahimali.administradordetareas.data.database;
+package com.brahimali.administradordetareas.database.dbaccess;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.brahimali.administradordetareas.data.Task;
+import com.brahimali.administradordetareas.database.Task;
 
 import java.util.ArrayList;
 

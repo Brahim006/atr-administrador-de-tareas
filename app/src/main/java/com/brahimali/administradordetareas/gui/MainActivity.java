@@ -1,18 +1,17 @@
-package com.brahimali.administradordetareas;
+package com.brahimali.administradordetareas.gui;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.brahimali.administradordetareas.data.Task;
-import com.brahimali.administradordetareas.data.database.DBAdapter;
+import com.brahimali.administradordetareas.R;
+import com.brahimali.administradordetareas.database.Task;
+import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
 import com.brahimali.administradordetareas.fragments.TabAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;

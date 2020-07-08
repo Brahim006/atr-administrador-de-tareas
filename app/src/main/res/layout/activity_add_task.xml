@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:paddingVertical="20dp"
     android:paddingHorizontal="30dp"
-    tools:context=".ManipulateTaskActivity">
+    tools:context=".gui.ManipulateTaskActivity">
 
     <EditText
         android:id="@+id/newTaskTitle"
