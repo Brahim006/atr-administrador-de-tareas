@@ -10,8 +10,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.database.Task;
-import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
+import com.brahimali.administradordetareas.database.TaskRoomDatabase;
+import com.brahimali.administradordetareas.database.dao.TaskDao;
+import com.brahimali.administradordetareas.database.entity.Task;
 import com.brahimali.administradordetareas.fragments.TabAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -42,15 +43,11 @@ public class MainActivity extends AppCompatActivity {
     /* Inicializa las vistas de la actividad */
     private void initGui() {
 
-        // Inicializa la base de datos en este contexto, la instancia perdura iniciada gracias al
-        // patrón singletton
-        DBAdapter.getInstance(this);
-
         fab = (FloatingActionButton)findViewById(R.id.addTaskFAB);
 
-        viewPager = (ViewPager)findViewById(R.id.viewPager);
-        tabLayout = (TabLayout)findViewById(R.id.tabLayout);
-        tabAdapter= new TabAdapter(getSupportFragmentManager(), this);
+        viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
+        tabAdapter= new TabAdapter(getSupportFragmentManager(), getApplicationContext());
 
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -69,34 +66,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK){
+        if(resultCode == RESULT_OK && requestCode == CREATE_TASK_REQUEST_CODE){
 
-            switch (requestCode){
+            // Crea una tarea con los datos enviados por la actividad de creación de tarea
+            String newTitle =
+                    data.getStringExtra(ManipulateTaskActivity.TASK_TITLE_IDENTIFIER);
+            String newDescription =
+                    data.getStringExtra(ManipulateTaskActivity.TASK_DESCRIPTION_IDENTIFIER);
+            int newStatusCode =
+                    data.getIntExtra(ManipulateTaskActivity.TASK_STATE_IDENTIFIER,
+                                     DEFAULT_STATUS_CODE);
 
-                case CREATE_TASK_REQUEST_CODE:
-                    // Crea una tarea con los datos enviados por la actividad de creación de tareas
-                    // y la añade a la base de datos
-                    String newTitle = data.getStringExtra(ManipulateTaskActivity.TASK_TITLE_IDENTIFIER);
-                    String newDescription = data.getStringExtra
-                                            (ManipulateTaskActivity.TASK_DESCRIPTION_IDENTIFIER);
-                    int newStatusCode = data.getIntExtra(ManipulateTaskActivity.TASK_STATE_IDENTIFIER,
-                                                         DEFAULT_STATUS_CODE);
+            Task newTask = new Task(newTitle, newDescription, newStatusCode);
 
-                    Task newTask = new Task(newTitle, newDescription, newStatusCode);
+            // Inserción en la base de datos
+            TaskDao dao = TaskRoomDatabase.getInstance(getApplicationContext()).getTaskDao();
+            dao.insert(newTask);
 
-                    DBAdapter.getInstance(this).insertTask(newTask);
+            // TODO: Averiguar cómo notificar de estos cambios a los fragmentos
+            // a través de un ViewModel.. ó de un FragmentManager...
 
-                    // TODO: Averiguar cómo notificar de estos cambios a los fragmentos
-                    // a través de un ViewModel.. ó de un FragmentManager...
+            String successMessage = getResources().getString(R.string.adding_task_success);
+            Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
 
-                    String successMessage = getResources().getString(R.string.adding_task_success);
-                    Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
-                break;
+        } else if(resultCode == RESULT_CANCELED){
+            // TODO: Tratar una respuesta inválida al crear una tarea
+        }
 
-            }
-
-        } // fin if
-
-    }
+    } // fin onActivityResult
 
 }

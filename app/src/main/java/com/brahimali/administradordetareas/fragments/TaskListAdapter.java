@@ -15,21 +15,24 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
+import com.brahimali.administradordetareas.database.TaskRoomDatabase;
+import com.brahimali.administradordetareas.database.dao.TaskDao;
 import com.brahimali.administradordetareas.gui.ManipulateTaskActivity;
 import com.brahimali.administradordetareas.gui.MainActivity;
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.database.Task;
-import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
+import com.brahimali.administradordetareas.database.entity.Task;
 import com.brahimali.administradordetareas.utils.TabNamer;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHolder> {
 
-    private ArrayList<Task> dataSet;
+    private List<Task> dataSet;
     private Fragment parentFragment;
 
     public static final String EDITING_TASK_POSITION = "editing task position";
+
+    // TODO: revisar el tema de los contextos
 
     /**
      * Crea un adaptador para manejar los elementos de la lista en la que se muestran los datos.
@@ -43,12 +46,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
 
         this.parentFragment = parentFragment;
 
+        TaskDao dao =
+                TaskRoomDatabase.getInstance(parentFragment.getContext().getApplicationContext())
+                                .getTaskDao();
+
         if(tabCode == 0){
             // Si el código de la pestaña es 0, significa que es la pestaña general
-            dataSet = DBAdapter.getInstance(parentFragment.getContext()).getAllTasks();
+            dataSet = dao.getAllTasks();
         } else {
             // Caso contrario, sólo se cargan las tareas del estado correspondiente
-            dataSet = DBAdapter.getInstance(parentFragment.getContext()).getByStatus(tabCode);
+            dataSet = dao.getByStatus(tabCode);
         }
 
     }
@@ -85,17 +92,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
         // TODO: Investigar cómo notificar a los fragments hermanos
 
         // Lógica del botón de borrado de tareas
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Borrado de la base de datos
-                String taskTitle = dataSet.get(position).getTitle();
-                DBAdapter.getInstance(parentFragment.getContext()).deleteTask(taskTitle);
+        holder.deleteButton.setOnClickListener(v -> {
 
-                // Borrado de la lista
-                dataSet.remove(position);
-                notifyItemRemoved(position);
-            }
+            // Borrado de la base de datos
+            String taskTitle = dataSet.get(position).getTitle();
+
+            TaskDao dao = TaskRoomDatabase
+                    .getInstance(parentFragment.getContext().getApplicationContext())
+                    .getTaskDao();
+            dao.delete(taskTitle);
+            // Borrado de la lista
+            dataSet.remove(position);
+            notifyItemRemoved(position);
+
         });
 
         //  Lógica para el botón de edición de tareas
@@ -131,22 +140,26 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        int newState = ManipulateTaskActivity.DEFAULT_STATE;
+                        int newStatus = ManipulateTaskActivity.DEFAULT_STATE;
 
                         switch (item.getItemId()){
                             // El item 1 no necesita cambiar el valor por defecto, son lo mismo
                             case R.id.item_state_2:
-                                newState = 2;
+                                newStatus = 2;
                                 break;
                             case R.id.item_state_3:
-                                newState = 3;
+                                newStatus = 3;
                                 break;
                         }
 
-                        DBAdapter.getInstance(parentFragment.getContext())
-                                 .changeStatus(task.getTitle(), newState);// Cambio en base de datos
+                        Task task = dataSet.get(position);
+                        task.setStatusCode(newStatus);
 
-                        dataSet.get(position).setStatusCode(newState);
+                        TaskDao dao = TaskRoomDatabase
+                                .getInstance(parentFragment.getContext().getApplicationContext())
+                                .getTaskDao();
+                        dao.update(task);
+
                         notifyItemChanged(position); // Cambio en el dataSet
 
                         return true;
@@ -187,7 +200,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
     } // fin clase TaskHolder
 
     // Getter para el dataSet
-    public ArrayList<Task> getDataSet(){
+    public List<Task> getDataSet(){
         return dataSet;
     }
 

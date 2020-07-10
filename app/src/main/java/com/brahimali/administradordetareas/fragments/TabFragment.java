@@ -12,11 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.brahimali.administradordetareas.database.TaskRoomDatabase;
+import com.brahimali.administradordetareas.database.dao.TaskDao;
 import com.brahimali.administradordetareas.gui.MainActivity;
 import com.brahimali.administradordetareas.gui.ManipulateTaskActivity;
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.database.Task;
-import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
+import com.brahimali.administradordetareas.database.entity.Task;
 
 /**
  * Fragmento contenedor del modelo para cada una de las pestañas.
@@ -34,7 +35,7 @@ public class TabFragment extends Fragment {
 
         int tabCode = getArguments().getInt(TabAdapter.TAB_NUM_REFERENCE);
 
-        recyclerView = (RecyclerView)v.findViewById(R.id.taskList);
+        recyclerView = v.findViewById(R.id.taskList);
         // Indica qué criterio debe usar cada RecyclerView para filtrar sus dataSets
         taskListAdapter = new TaskListAdapter(this, tabCode);
 
@@ -46,14 +47,6 @@ public class TabFragment extends Fragment {
         return v;
 
     } // fin onCreateView
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        // Método a usar para restaurar el fragmento
-
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -73,7 +66,9 @@ public class TabFragment extends Fragment {
                     Task editedTask = new Task(editedTitle, editedDescription, editedState);
 
                     // Actualización en la base de datos
-                    DBAdapter.getInstance(getContext()).insertTask(editedTask);
+                    TaskDao dao = TaskRoomDatabase.getInstance(getContext().getApplicationContext())
+                                                  .getTaskDao();
+                    dao.insert(editedTask);
 
                     int position = data.getIntExtra(TaskListAdapter.EDITING_TASK_POSITION, 0);
                     // Actualización del recyclerview

@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.database.dbaccess.DBAdapter;
+import com.brahimali.administradordetareas.database.TaskRoomDatabase;
 import com.brahimali.administradordetareas.fragments.TaskListAdapter;
 import com.brahimali.administradordetareas.utils.TabNamer;
 
@@ -35,9 +35,12 @@ public class ManipulateTaskActivity extends AppCompatActivity {
     public static final int DEFAULT_STATE = 1;
 
     // Identificadores de las variables retornadas a las actividades de llamada
-    public static final String TASK_TITLE_IDENTIFIER = "task title";
-    public static final String TASK_DESCRIPTION_IDENTIFIER = "task description";
-    public static final String TASK_STATE_IDENTIFIER = "task state code";
+    public static final String TASK_TITLE_IDENTIFIER =
+            "com.brahimali.administradordetareas.TASK_TITLE";
+    public static final String TASK_DESCRIPTION_IDENTIFIER =
+            "com.brahimali.administradordetareas.TASK_DESCRIPTION";
+    public static final String TASK_STATE_IDENTIFIER =
+            "com.brahimali.administradordetareas.TASK_STATUS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,23 +57,23 @@ public class ManipulateTaskActivity extends AppCompatActivity {
         if(taskPosition != -1){
             taskTitle.setText(getIntent().getStringExtra(TASK_TITLE_IDENTIFIER));
             taskDescription.setText(getIntent().getStringExtra(TASK_DESCRIPTION_IDENTIFIER));
-            selectStateButton.setText(TabNamer.getValidTabName(this, taskState));
+            selectStateButton.setText(TabNamer.getValidTabName(getApplicationContext(), taskState));
         }
 
     }
 
     private void initGui(){
-        taskTitle = (EditText)findViewById(R.id.newTaskTitle);
-        taskDescription = (EditText)findViewById(R.id.newTaskDescription);
-        selectStateButton = (Button)findViewById(R.id.selectStateButton);
-        addTaskButton = (Button)findViewById(R.id.addTasKButton);
+        taskTitle = findViewById(R.id.newTaskTitle);
+        taskDescription = findViewById(R.id.newTaskDescription);
+        selectStateButton = findViewById(R.id.selectStateButton);
+        addTaskButton = findViewById(R.id.addTasKButton);
     }
 
     // Lógica de los botones
 
     public void onClickStateButton(View view){
 
-        PopupMenu popupMenu = new PopupMenu(this, view);
+        PopupMenu popupMenu = new PopupMenu(getApplicationContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
 
@@ -106,6 +109,8 @@ public class ManipulateTaskActivity extends AppCompatActivity {
 
     public void onClickAddTaskButton(View view){
 
+        // TODO: Tratar los casos en los que se inserta un título vacío
+
         String title = taskTitle.getText().toString();
         String description = taskDescription.getText().toString();
 
@@ -115,12 +120,14 @@ public class ManipulateTaskActivity extends AppCompatActivity {
         returnedArgs.putExtra(TASK_DESCRIPTION_IDENTIFIER, description);
         returnedArgs.putExtra(TASK_STATE_IDENTIFIER, taskState);
 
+        // TODO: Analizar la posibilidad de mandar un extra con la tarea (parselable, serializable)
+
         if(taskPosition != -1){
             returnedArgs.putExtra(TaskListAdapter.EDITING_TASK_POSITION, taskPosition);
             // Se borra la tarea modificada antes de que se cargue la tarea con nuevos datos
-            DBAdapter.getInstance(this).deleteTask(
-                    getIntent().getStringExtra(TASK_TITLE_IDENTIFIER)
-            );
+            String oldTitle = getIntent().getStringExtra(TASK_TITLE_IDENTIFIER);
+
+            TaskRoomDatabase.getInstance(getApplicationContext()).getTaskDao().delete(oldTitle);
         }
 
         setResult(RESULT_OK, returnedArgs);
