@@ -2,6 +2,7 @@ package com.brahimali.administradordetareas.gui;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -10,18 +11,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.database.TaskRoomDatabase;
-import com.brahimali.administradordetareas.database.dao.TaskDao;
 import com.brahimali.administradordetareas.database.entity.Task;
 import com.brahimali.administradordetareas.fragments.TabAdapter;
+import com.brahimali.administradordetareas.viewmodel.TaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;    // Gestor de paginado de fragmentos
-    private TabAdapter tabAdapter;  // Adaptador para el viewPager
-    private TabLayout tabLayout;    // Layout para las pestañas
+    private ViewPager viewPager;            // Gestor de paginado de fragmentos
+    private TabAdapter tabAdapter;          // Adaptador para el viewPager
+    private TabLayout tabLayout;            // Layout para las pestañas
+    private TaskViewModel taskViewModel;    // ViewModel para observar datos y acceso a db
+
 
     private FloatingActionButton fab;
 
@@ -38,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         initGui(); // Inicializa los componentes
 
+        taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
+
     }
 
-    /* Inicializa las vistas de la actividad */
     private void initGui() {
 
         fab = (FloatingActionButton)findViewById(R.id.addTaskFAB);
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickAddTaskFAB(View view){ // Comportamiento del floating action button.
 
         Intent intent = new Intent(this, ManipulateTaskActivity.class);
+        intent.putExtra(ManipulateTaskActivity.REQUEST_CODE_IDENTIFIER, CREATE_TASK_REQUEST_CODE);
 
         startActivityForResult(intent, CREATE_TASK_REQUEST_CODE);
 
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(resultCode == RESULT_OK && requestCode == CREATE_TASK_REQUEST_CODE){
 
-            // Crea una tarea con los datos enviados por la actividad de creación de tarea
+            // Crea una tarea según los resultados devueltos por la actividad de creación de tareas
             String newTitle =
                     data.getStringExtra(ManipulateTaskActivity.TASK_TITLE_IDENTIFIER);
             String newDescription =
@@ -79,20 +83,16 @@ public class MainActivity extends AppCompatActivity {
 
             Task newTask = new Task(newTitle, newDescription, newStatusCode);
 
-            // Inserción en la base de datos
-            TaskDao dao = TaskRoomDatabase.getInstance(getApplicationContext()).getTaskDao();
-            dao.insert(newTask);
+            taskViewModel.insert(newTask);
 
-            // TODO: Averiguar cómo notificar de estos cambios a los fragmentos
-            // a través de un ViewModel.. ó de un FragmentManager...
+            Toast.makeText(this, getResources().getString(R.string.adding_task_success),
+                    Toast.LENGTH_SHORT).show();
 
-            String successMessage = getResources().getString(R.string.adding_task_success);
-            Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show();
-
-        } else if(resultCode == RESULT_CANCELED){
-            // TODO: Tratar una respuesta inválida al crear una tarea
+        } else if(resultCode == ManipulateTaskActivity.RESULT_NULL_TITLE){
+            Toast.makeText(this, getResources().getString(R.string.null_title_warning),
+                    Toast.LENGTH_SHORT).show();
         }
 
-    } // fin onActivityResult
+    }
 
 }

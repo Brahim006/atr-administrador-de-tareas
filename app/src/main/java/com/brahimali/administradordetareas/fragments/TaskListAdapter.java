@@ -12,13 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import com.brahimali.administradordetareas.database.TaskRoomDatabase;
-import com.brahimali.administradordetareas.database.dao.TaskDao;
 import com.brahimali.administradordetareas.gui.ManipulateTaskActivity;
 import com.brahimali.administradordetareas.gui.MainActivity;
 import com.brahimali.administradordetareas.R;
@@ -27,43 +24,20 @@ import com.brahimali.administradordetareas.utils.TabNamer;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHolder> {
 
-    private List<Task> dataSet;
-    private Fragment parentFragment;
-
-    public static final String EDITING_TASK_POSITION = "editing task position";
-
-    // TODO: revisar el tema de los contextos
+    private List<Task> tasksList;
+    private TabFragment ownerTabFragment;
 
     /**
      * Crea un adaptador para manejar los elementos de la lista en la que se muestran los datos.
-     * Está pensada para usarse dentro de un fragmento, por lo que se requiere una referencia
-     * a éste.
-     * Ciertos parámetros están restrictos al código de tablas expuesto en {@link MainActivity}.
-     * @param parentFragment El fragmento contenedor de la lista.
-     * @param tabCode El código de tabla que se representa.
+     * @param ownerTabFragment Una referencia al fragmento contenedor de la lista.
      */
-    public TaskListAdapter(Fragment parentFragment, int tabCode){
-
-        this.parentFragment = parentFragment;
-
-        TaskDao dao =
-                TaskRoomDatabase.getInstance(parentFragment.getContext().getApplicationContext())
-                                .getTaskDao();
-
-        if(tabCode == 0){
-            // Si el código de la pestaña es 0, significa que es la pestaña general
-            dataSet = dao.getAllTasks();
-        } else {
-            // Caso contrario, sólo se cargan las tareas del estado correspondiente
-            dataSet = dao.getByStatus(tabCode);
-        }
-
+    public TaskListAdapter(TabFragment ownerTabFragment){
+        this.ownerTabFragment = ownerTabFragment;
     }
 
     @NonNull
     @Override
     public TaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Crea la vista correspondiente a un item de la lista.
         View taskItem = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_list_item, parent,false);
 
@@ -72,38 +46,30 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
 
     @Override
     public int getItemCount() {
-        return dataSet.size();
+        if(tasksList != null){
+            return tasksList.size();
+        } else
+            return 0;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final TaskHolder holder, final int position) {
 
-        final Task task = dataSet.get(position);
+        final Task task = tasksList.get(position);
 
         holder.titleView.setText(task.getTitle());
         holder.descriptionView.setText(task.getDescription());
 
         // Determino el nombre del estado según su código
-        String state = TabNamer.getValidTabName(parentFragment.getContext(),
-                                                task.getStatusCode());
+        String state = TabNamer.getValidTabName(ownerTabFragment.getContext(), task.getStatusCode());
 
         holder.stateView.setText(state);
-
-        // TODO: Investigar cómo notificar a los fragments hermanos
 
         // Lógica del botón de borrado de tareas
         holder.deleteButton.setOnClickListener(v -> {
 
             // Borrado de la base de datos
-            String taskTitle = dataSet.get(position).getTitle();
-
-            TaskDao dao = TaskRoomDatabase
-                    .getInstance(parentFragment.getContext().getApplicationContext())
-                    .getTaskDao();
-            dao.delete(taskTitle);
-            // Borrado de la lista
-            dataSet.remove(position);
-            notifyItemRemoved(position);
+            ownerTabFragment.getTaskViewModel().delete(task);
 
         });
 
@@ -112,17 +78,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(parentFragment.getContext(),
+                Intent intent = new Intent(ownerTabFragment.getContext(),
                                            ManipulateTaskActivity.class);
 
                 intent.putExtra(ManipulateTaskActivity.TASK_TITLE_IDENTIFIER, task.getTitle());
                 intent.putExtra(ManipulateTaskActivity.TASK_DESCRIPTION_IDENTIFIER,
                                 task.getDescription());
                 intent.putExtra(ManipulateTaskActivity.TASK_STATE_IDENTIFIER, task.getStatusCode());
-                // Envía la posición de la tarea dentro del dataSet
-                intent.putExtra(EDITING_TASK_POSITION, position);
+                intent.putExtra(ManipulateTaskActivity.REQUEST_CODE_IDENTIFIER,
+                                MainActivity.EDIT_TASK_REQUEST_CODE);
 
-                parentFragment.startActivityForResult(intent, MainActivity.EDIT_TASK_REQUEST_CODE);
+                ownerTabFragment.startActivityForResult(intent, MainActivity.EDIT_TASK_REQUEST_CODE);
 
             }
         });
@@ -133,7 +99,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             @Override
             public void onClick(View v) {
 
-                PopupMenu popupMenu = new PopupMenu(parentFragment.getContext(), v);
+                PopupMenu popupMenu = new PopupMenu(ownerTabFragment.getContext(), v);
                 MenuInflater inflater = popupMenu.getMenuInflater();
                 inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
 
@@ -152,26 +118,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
                                 break;
                         }
 
-                        Task task = dataSet.get(position);
+                        Task task = tasksList.get(position);
                         task.setStatusCode(newStatus);
-
-                        TaskDao dao = TaskRoomDatabase
-                                .getInstance(parentFragment.getContext().getApplicationContext())
-                                .getTaskDao();
-                        dao.update(task);
-
-                        notifyItemChanged(position); // Cambio en el dataSet
+                        ownerTabFragment.getTaskViewModel().update(task);
 
                         return true;
                     }
                 });
-
                 popupMenu.show();
-
             }
         }); // fin listener
 
     } // fin onBindViewHolder
+
+    // Setter para el dataSet
+    public void setTasksList(List<Task> tasksList){
+        this.tasksList = tasksList;
+        notifyDataSetChanged();
+    }
 
     /* Holder que se encarga de generar las vistas para cada elemento de la lista. */
     public static class TaskHolder extends RecyclerView.ViewHolder{
@@ -198,10 +162,5 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             changeStateButton = (Button)itemView.findViewById(R.id.change_state_button);
         }
     } // fin clase TaskHolder
-
-    // Getter para el dataSet
-    public List<Task> getDataSet(){
-        return dataSet;
-    }
 
 }

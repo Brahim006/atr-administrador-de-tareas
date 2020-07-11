@@ -1,6 +1,7 @@
 package com.brahimali.administradordetareas.database.dao;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -24,7 +25,7 @@ public interface TaskDao {
      * @return Una colección List de objetos Task que representan a todas las tareas.
      */
     @Query(DBContract.GET_ALL_TASKS_QUERY)
-    public List<Task> getAllTasks();
+    public LiveData<List<Task>> getAllTasks();
 
     /**
      * Retorna una tarea según su título (único en la base de datos).
@@ -43,7 +44,7 @@ public interface TaskDao {
      *         de estado.
      */
     @Query(DBContract.GET_TASKS_BY_STATUS)
-    public List<Task> getByStatus(int status);
+    public LiveData<List<Task>> getByStatus(int status);
 
     /**
      * Inserta enla base de datos una tarea representada por el objeto de tipo Task.

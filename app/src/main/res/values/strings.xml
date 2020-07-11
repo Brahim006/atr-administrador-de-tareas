@@ -29,5 +29,7 @@
 
     <!-- Mensajes mostrados al usuarios en Toast ó Snackbars -->
     <string name="adding_task_success">¡Tarea añadida!</string>
+    <string name="edit_task_success">¡Tarea editada!</string>
+    <string name="null_title_warning">Debes ingresar un título.</string>
 
 </resources>

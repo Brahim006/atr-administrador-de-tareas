@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 
 import com.brahimali.administradordetareas.R;
-import com.brahimali.administradordetareas.database.TaskRoomDatabase;
-import com.brahimali.administradordetareas.fragments.TaskListAdapter;
 import com.brahimali.administradordetareas.utils.TabNamer;
 
 /**
@@ -27,12 +25,11 @@ public class ManipulateTaskActivity extends AppCompatActivity {
     private Button selectStateButton;
     private Button addTaskButton;
 
-    // Almacena el código de estado de la nueva tarea, puede ser manipulado por el popUp menu
     private int taskState;
-    // Las tareas que se editan vienen con su posición en el dataset
-    private int taskPosition;
+    private int requestCode;
 
     public static final int DEFAULT_STATE = 1;
+    public static final int RESULT_NULL_TITLE = 2;  // resultCode para títulos vacíos
 
     // Identificadores de las variables retornadas a las actividades de llamada
     public static final String TASK_TITLE_IDENTIFIER =
@@ -41,6 +38,10 @@ public class ManipulateTaskActivity extends AppCompatActivity {
             "com.brahimali.administradordetareas.TASK_DESCRIPTION";
     public static final String TASK_STATE_IDENTIFIER =
             "com.brahimali.administradordetareas.TASK_STATUS";
+    public static final String OLD_TITLE_IDENTIFIER =
+            "com.brahimali.administradordetareas.OLD_TITLE";
+    public static final String REQUEST_CODE_IDENTIFIER =
+            "com.brahimali.administradordetareas.REQUEST_CODE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +51,10 @@ public class ManipulateTaskActivity extends AppCompatActivity {
         initGui();
 
         taskState = getIntent().getIntExtra(TASK_STATE_IDENTIFIER, DEFAULT_STATE);
-        // El valor -1 significa que es una tarea nueva, ya que no tiene posición todavía
-        taskPosition = getIntent().getIntExtra(TaskListAdapter.EDITING_TASK_POSITION, -1);
+        requestCode = getIntent().getIntExtra(ManipulateTaskActivity.REQUEST_CODE_IDENTIFIER, 0);
 
-        // Si no se ha enviado información de ninguna tarea, significa que se está creando una
-        if(taskPosition != -1){
+        // Si se ha pedido editar la tarea, inicializa la gui con sus datos
+        if(requestCode == MainActivity.EDIT_TASK_REQUEST_CODE){
             taskTitle.setText(getIntent().getStringExtra(TASK_TITLE_IDENTIFIER));
             taskDescription.setText(getIntent().getStringExtra(TASK_DESCRIPTION_IDENTIFIER));
             selectStateButton.setText(TabNamer.getValidTabName(getApplicationContext(), taskState));
@@ -109,30 +109,32 @@ public class ManipulateTaskActivity extends AppCompatActivity {
 
     public void onClickAddTaskButton(View view){
 
-        // TODO: Tratar los casos en los que se inserta un título vacío
-
         String title = taskTitle.getText().toString();
-        String description = taskDescription.getText().toString();
 
-        Intent returnedArgs = new Intent();
+        if(!title.equals("")){
+            String description = taskDescription.getText().toString();
 
-        returnedArgs.putExtra(TASK_TITLE_IDENTIFIER, title);
-        returnedArgs.putExtra(TASK_DESCRIPTION_IDENTIFIER, description);
-        returnedArgs.putExtra(TASK_STATE_IDENTIFIER, taskState);
+            Intent returnedArgs = new Intent();
 
-        // TODO: Analizar la posibilidad de mandar un extra con la tarea (parselable, serializable)
+            returnedArgs.putExtra(TASK_TITLE_IDENTIFIER, title);
+            returnedArgs.putExtra(TASK_DESCRIPTION_IDENTIFIER, description);
+            returnedArgs.putExtra(TASK_STATE_IDENTIFIER, taskState);
 
-        if(taskPosition != -1){
-            returnedArgs.putExtra(TaskListAdapter.EDITING_TASK_POSITION, taskPosition);
-            // Se borra la tarea modificada antes de que se cargue la tarea con nuevos datos
             String oldTitle = getIntent().getStringExtra(TASK_TITLE_IDENTIFIER);
 
-            TaskRoomDatabase.getInstance(getApplicationContext()).getTaskDao().delete(oldTitle);
+            if(requestCode == MainActivity.EDIT_TASK_REQUEST_CODE && !title.equals(oldTitle)){
+                // Retorna el viejo título en caso de que éste haya sido editado
+                returnedArgs.putExtra(OLD_TITLE_IDENTIFIER, oldTitle);
+            }
+
+            setResult(RESULT_OK, returnedArgs);
+            finish();
+
+        } else {
+            // Retorna el resultCode avisando que se ingresó un título vacío
+            setResult(RESULT_NULL_TITLE);
+            finish();
         }
-
-        setResult(RESULT_OK, returnedArgs);
-        finish();
-
     }
 
 }
