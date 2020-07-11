@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Administrador de TaReas</string>
+    <string name="app_name">ATR</string>
 
     <!-- Nombres para las pestañas de la actividad principal adicionales a la separación por
          estado de la tarea. -->
