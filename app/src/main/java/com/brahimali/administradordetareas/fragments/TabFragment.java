@@ -50,8 +50,6 @@ public class TabFragment extends Fragment {
         recyclerView.setAdapter(taskListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));// Distribución lineal
 
-        setFragmentBackgroundColor(tabCode);
-
         return v;
 
     } // fin onCreateView
@@ -124,26 +122,6 @@ public class TabFragment extends Fragment {
 
     public TaskViewModel getTaskViewModel() {
         return taskViewModel;
-    }
-
-    /* Determina el color de fondo del fragmento */
-    private void setFragmentBackgroundColor(int tabCode){
-
-        int colorCode = R.color.allTasksColor;
-
-        switch (tabCode){ // Color del fondo
-            case 1:
-                colorCode = R.color.pendantColor;
-                break;
-            case 2:
-                colorCode = R.color.inProgressColor;
-                break;
-            case 3:
-                colorCode = R.color.finishedColor;
-                break;
-        }
-
-        recyclerView.setBackgroundColor(getResources().getColor(colorCode));
     }
 
 }
