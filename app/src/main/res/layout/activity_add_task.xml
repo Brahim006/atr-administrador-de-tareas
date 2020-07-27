@@ -54,14 +54,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.8" />
 
-        <Button
-            android:id="@+id/selectStateButton"
-            android:onClick="onClickStateButton"
-            style="@android:style/Widget.Holo.Button"
-            android:layout_width="113dp"
-            android:layout_height="42dp"
-            android:fontFamily="casual"
-            android:text="@string/state_1"
+        <Spinner
+            android:id="@+id/manipulateTaskSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -71,11 +67,11 @@
 
         <Button
             android:id="@+id/addTasKButton"
-            android:onClick="onClickAddTaskButton"
             android:layout_width="33dp"
             android:layout_height="40dp"
             android:layout_marginStart="28dp"
-            android:background="@mipmap/edit_task_icon"
+            android:background="@drawable/ic_edit_task_24dp"
+            android:onClick="onClickAddTaskButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/selectStateButton"

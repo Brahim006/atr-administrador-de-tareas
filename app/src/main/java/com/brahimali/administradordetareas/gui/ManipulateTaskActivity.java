@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 
 import com.brahimali.administradordetareas.R;
 import com.brahimali.administradordetareas.utils.TabNamer;
@@ -22,8 +25,9 @@ public class ManipulateTaskActivity extends AppCompatActivity {
 
     private EditText taskTitle;
     private EditText taskDescription;
-    private Button selectStateButton;
     private Button addTaskButton;
+    private Spinner manipulateTaskSpinner;
+    private ArrayAdapter<CharSequence> spinnerAdapter;
 
     private int taskState;
     private int requestCode;
@@ -57,7 +61,7 @@ public class ManipulateTaskActivity extends AppCompatActivity {
         if(requestCode == MainActivity.EDIT_TASK_REQUEST_CODE){
             taskTitle.setText(getIntent().getStringExtra(TASK_TITLE_IDENTIFIER));
             taskDescription.setText(getIntent().getStringExtra(TASK_DESCRIPTION_IDENTIFIER));
-            selectStateButton.setText(TabNamer.getValidTabName(getApplicationContext(), taskState));
+            manipulateTaskSpinner.setSelection(taskState);
         }
 
     }
@@ -65,47 +69,28 @@ public class ManipulateTaskActivity extends AppCompatActivity {
     private void initGui(){
         taskTitle = findViewById(R.id.newTaskTitle);
         taskDescription = findViewById(R.id.newTaskDescription);
-        selectStateButton = findViewById(R.id.selectStateButton);
         addTaskButton = findViewById(R.id.addTasKButton);
+
+        // Spinner del estado de la tarea
+        manipulateTaskSpinner = findViewById(R.id.manipulateTaskSpinner);
+        spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.valid_states_array,
+                android.R.layout.simple_spinner_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        manipulateTaskSpinner.setAdapter(spinnerAdapter);
+        // Logica de la selección de items en el spinner
+        manipulateTaskSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                taskState = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
     }
 
     // Lógica de los botones
-
-    public void onClickStateButton(View view){
-
-        PopupMenu popupMenu = new PopupMenu(getApplicationContext(), view);
-        MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
-
-        // Lógica del PopUp Menu
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                int statusCode = DEFAULT_STATE;
-
-                switch (item.getItemId()){
-                    case R.id.item_state_2:
-                        statusCode = 2;
-                        break;
-                    case R.id.item_state_3:
-                        statusCode = 3;
-                        break;
-                }
-
-                taskState = statusCode;
-                selectStateButton.setText(TabNamer.getValidTabName(getApplicationContext(),
-                                                                   statusCode));
-                return true;
-
-            }
-
-        }); // fin listener
-
-        popupMenu.show();
-
-    } // fin onClickStateButton
 
     public void onClickAddTaskButton(View view){
 

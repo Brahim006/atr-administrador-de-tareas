@@ -10,104 +10,65 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/task_cardView"
-        card_view:cardCornerRadius="15dp"
-        card_view:contentPadding="15dp"
-        card_view:cardElevation="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
+
             android:layout_width="match_parent"
-            android:layout_height="199dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/titleView"
-                android:text="@string/card_title"
-                android:textSize="25sp"
-                android:fontFamily="casual"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="0.097"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintVertical_bias="0.058" />
+                android:fontFamily="@font/lato"
+                android:text="@string/card_title"
+                android:textSize="25sp"
+                android:textStyle="bold"/>
 
             <Button
                 android:id="@+id/deleteButton"
-                android:background="@mipmap/delete_task_icon_round"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                card_view:layout_constraintBottom_toTopOf="@+id/editButton"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintVertical_bias="0.0" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/ic_delete_task_30dp"/>
 
             <TextView
                 android:id="@+id/descriptionView"
-                android:text="@string/card_description"
-                android:textSize="18sp"
-                android:scrollbars="vertical"
-                android:fontFamily="casual"
+                android:layout_width="303dp"
+                android:layout_height="62dp"
+                android:fontFamily="@font/lato"
                 android:scrollbarDefaultDelayBeforeFade="@android:integer/config_mediumAnimTime"
                 android:scrollbarFadeDuration="@android:integer/config_shortAnimTime"
                 android:scrollbarSize="8dp"
                 android:scrollbarThumbVertical="@color/colorAccent"
-                android:layout_width="303dp"
-                android:layout_height="62dp"
-                android:layout_marginTop="12dp"
-                card_view:layout_constraintBottom_toTopOf="@+id/stateView"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="0.222"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toBottomOf="@+id/titleView"
-                card_view:layout_constraintVertical_bias="0.0" />
+                android:scrollbars="vertical"
+                android:layout_below="@id/titleView"
+                android:layout_marginVertical="5dp"
+                android:layout_marginLeft="10dp"
+                android:text="@string/card_description"
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/editButton"
-                android:background="@mipmap/edit_task_icon"
+                android:layout_toEndOf="@id/descriptionView"
+                android:layout_alignTop="@id/descriptionView"
                 android:layout_width="51dp"
                 android:layout_height="65dp"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="0.0"
-                card_view:layout_constraintStart_toEndOf="@+id/descriptionView"
-                card_view:layout_constraintTop_toTopOf="@+id/descriptionView" />
+                android:background="@drawable/ic_edit_task_24dp" />
 
-            <TextView
-                android:id="@+id/stateView"
-                android:text="@string/card_state"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:fontFamily="casual"
+            <Spinner
+                android:id="@+id/cardStateSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="56dp"
-                android:layout_marginBottom="16dp"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintStart_toStartOf="parent" />
+                android:layout_below="@id/descriptionView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginVertical="15dp"/>
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                card_view:layout_constraintGuide_percent="0.0" />
-
-            <Button
-                android:id="@+id/change_state_button"
-                android:background="@mipmap/change_state__icon"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginBottom="16dp"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintHorizontal_bias="0.569"
-                card_view:layout_constraintStart_toEndOf="@+id/stateView" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 

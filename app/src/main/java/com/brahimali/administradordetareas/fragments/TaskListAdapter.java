@@ -2,12 +2,12 @@ package com.brahimali.administradordetareas.fragments;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +20,6 @@ import com.brahimali.administradordetareas.gui.ManipulateTaskActivity;
 import com.brahimali.administradordetareas.gui.MainActivity;
 import com.brahimali.administradordetareas.R;
 import com.brahimali.administradordetareas.database.entity.Task;
-import com.brahimali.administradordetareas.utils.TabNamer;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHolder> {
 
@@ -60,10 +59,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
         holder.titleView.setText(task.getTitle());
         holder.descriptionView.setText(task.getDescription());
 
-        // Determino el nombre del estado según su código
-        String state = TabNamer.getValidTabName(ownerTabFragment.getContext(), task.getStatusCode());
-
-        holder.stateView.setText(state);
+        // Inicialización del spinner
+        holder.spinnerAdapter = ArrayAdapter.createFromResource(ownerTabFragment.getContext(),
+                                R.array.valid_states_array, android.R.layout.simple_spinner_item);
+        holder.spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.cardStateSpinner.setAdapter(holder.spinnerAdapter);
+        // Se muestra el estado actual de la tarea en el spinner
+        holder.cardStateSpinner.setSelection(task.getStatusCode());
 
         // Lógica del botón de borrado de tareas
         holder.deleteButton.setOnClickListener(v -> {
@@ -93,41 +95,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
             }
         });
 
-        // Lógica del botón de cambio de estado
-        holder.changeStateButton.setOnClickListener(new View.OnClickListener() {
+        // Lógica para los cambios de estado en el spinner
+        holder.cardStateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Se modifica el estado de la tarea representada por la tarjeta
+                task.setStatusCode(position);
+                ownerTabFragment.getTaskViewModel().update(task);
+            }
 
             @Override
-            public void onClick(View v) {
-
-                PopupMenu popupMenu = new PopupMenu(ownerTabFragment.getContext(), v);
-                MenuInflater inflater = popupMenu.getMenuInflater();
-                inflater.inflate(R.menu.task_state_selector, popupMenu.getMenu());
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int newStatus = ManipulateTaskActivity.DEFAULT_STATE;
-
-                        switch (item.getItemId()){
-                            // El item 1 no necesita cambiar el valor por defecto, son lo mismo
-                            case R.id.item_state_2:
-                                newStatus = 2;
-                                break;
-                            case R.id.item_state_3:
-                                newStatus = 3;
-                                break;
-                        }
-
-                        Task task = tasksList.get(position);
-                        task.setStatusCode(newStatus);
-                        ownerTabFragment.getTaskViewModel().update(task);
-
-                        return true;
-                    }
-                });
-                popupMenu.show();
-            }
-        }); // fin listener
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
     } // fin onBindViewHolder
 
@@ -140,26 +119,25 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskHo
     /* Holder que se encarga de generar las vistas para cada elemento de la lista. */
     public static class TaskHolder extends RecyclerView.ViewHolder{
 
+        CardView cardView;
         TextView titleView;
         TextView descriptionView;
-        TextView stateView;
         Button deleteButton;
         Button editButton;
-        Button changeStateButton;
-        CardView cardView;
+        Spinner cardStateSpinner;
+        ArrayAdapter<CharSequence> spinnerAdapter;
 
         public TaskHolder(@NonNull View itemView) {
             super(itemView);
 
-            cardView = (CardView)itemView.findViewById(R.id.task_cardView);
+            cardView = itemView.findViewById(R.id.task_cardView);
 
-            titleView = (TextView)itemView.findViewById(R.id.titleView);
-            descriptionView = (TextView)itemView.findViewById(R.id.descriptionView);
-            stateView = (TextView)itemView.findViewById(R.id.stateView);
+            titleView = itemView.findViewById(R.id.titleView);
+            descriptionView = itemView.findViewById(R.id.descriptionView);
 
-            deleteButton = (Button)itemView.findViewById(R.id.deleteButton);
-            editButton = (Button)itemView.findViewById(R.id.editButton);
-            changeStateButton = (Button)itemView.findViewById(R.id.change_state_button);
+            deleteButton = itemView.findViewById(R.id.deleteButton);
+            editButton = itemView.findViewById(R.id.editButton);
+            cardStateSpinner = itemView.findViewById(R.id.cardStateSpinner);
         }
     } // fin clase TaskHolder
 
