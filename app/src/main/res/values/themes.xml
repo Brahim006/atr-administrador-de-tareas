@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <!-- Color para la barra de la app y otros elementos de IU primarios -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- Variante más oscura del color primario, usada para la barra de estado
+             (Android 5.0+) y barras contextuales -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- Un color secundario para controles tipo checkbox, textfields, FAB... -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Aparece detrás del contenido scrolleable (Listas, por ejemplo) -->
+        <item name="colorBackgroundFloating">@color/colorBackgroundFloating</item>
+        <!-- Color para vistas que muestren errores ó alertas -->
+        <item name="colorError">@color/colorError</item>
+
+        <!-- Actividad principal -->
+        <item name="fragmentTabsStyle">@style/fragmentTabsStyle_base</item>
+        <item name="floatingActionButtonStyle">@style/mainActivityFAB_base</item>
+        <item name="tabLayoutStyle">@style/tabLayoutStyle_base</item>
+
+        <!-- Tarjetas de las listas de tareas -->
+        <item name="cardViewStyle">@style/cardViewStyle_base</item>
+        <item name="titleTextViewStyle">@style/titleTextViewStyle_base</item>
+        <item name="descriptionTextViewStyle">@style/descriptionTextViewStyle_base</item>
+        <item name="deleteTaskButtonStyle">@style/deleteTaskButtonStyle_base</item>
+        <item name="editTaskButtonStyle">@style/editTaskButtonStyle_base</item>
+        <item name="changeStateSpinnerStyle">@style/changeStateSpinnerStyle_base</item>
+
+        <!-- Actividad de creación/edición de tareas -->
+        <item name="manipulateTaskActivityStyle">@style/manipulateTaskActivityStyle_base</item>
+        <item name="titleEditViewStyle">@style/titleEditViewStyle_base</item>
+        <item name="descriptionEditViewStyle">@style/descriptionEditViewStyle_base</item>
+        <item name="taskStateLabelStyle">@style/taskStateLabelStyle_base</item>
+        <item name="createTaskButtonStyle">@style/createTaskButtonStyle_base</item>
+
+    </style>
+
+</resources>

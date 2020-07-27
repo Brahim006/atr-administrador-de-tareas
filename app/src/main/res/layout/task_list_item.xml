@@ -6,10 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent" >
 
-    <!-- TODO: Ordenar este error de la naturaleza, revisar el diseño porque se ve horrible -->
-
     <androidx.cardview.widget.CardView
         android:id="@+id/task_cardView"
+        style="?cardViewStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,6 +19,7 @@
 
             <TextView
                 android:id="@+id/titleView"
+                style="?titleTextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
@@ -29,6 +29,7 @@
 
             <Button
                 android:id="@+id/deleteButton"
+                style="?deleteTaskButtonStyle"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
@@ -38,6 +39,7 @@
 
             <TextView
                 android:id="@+id/descriptionView"
+                style="?descriptionTextViewStyle"
                 android:layout_width="303dp"
                 android:layout_height="62dp"
                 android:fontFamily="@font/lato"
@@ -54,6 +56,7 @@
 
             <Button
                 android:id="@+id/editButton"
+                style="?editTaskButtonStyle"
                 android:layout_toEndOf="@id/descriptionView"
                 android:layout_alignTop="@id/descriptionView"
                 android:layout_width="51dp"
@@ -62,6 +65,7 @@
 
             <Spinner
                 android:id="@+id/cardStateSpinner"
+                style="?changeStateSpinnerStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/descriptionView"

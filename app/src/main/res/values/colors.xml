@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
 
-    <!-- Colores asociados a las pestañas y/o al estado de las tareas -->
-    <color name="allTasksColor">#EDEDED</color>
-    <color name="pendantColor">#52AB4E</color>
-    <color name="inProgressColor">#D3E23D</color>
-    <color name="finishedColor">#D11E1E</color>
+    <!-- Colores básicos para el uso de Material design -->
+    <color name="colorPrimary">#23343E</color><!-- appbar y otros elementos de IU primarios -->
+    <!-- Variante más oscura del color primario, usada para la barra de estado -->
+    <color name="colorPrimaryDark">#262F34</color>
+    <!-- Un color secundario para controles tipo checkbox, textfields, FAB... -->
+    <color name="colorAccent">#F9AA33</color>
+    <!-- Afecta las superficies de algunos componentes, como tarjetas, menúes, etc -->
+    <color name="colorSurface">#262F34</color>
+    <!-- Aparece detrás del contenido scrolleable (Listas, por ejemplo) -->
+    <color name="colorBackgroundFloating">#E8F0F6</color>
+    <!-- Alerta de errores en los componentes, como texto inválido en un TextField -->
+    <color name="colorError">#B00020</color>
 
-    <color name="darkColor">#162521</color>
-    <color name="opaqueBlueColor">#587291</color>
-    <color name="aquamarineColor">#BEE3DB</color>
-    <color name="pencilYellowColor">#F6C728</color>
+    <!--
+        Colores para posicionar sobre los colores base (texto, íconos, etc..).
+        Siguen la nomenclatura "on" + color
+     -->
+    <color name="onPrimary">#E8F0F6</color>
+    <color name="onPrimaryDark">#E8F0F6</color>
+    <color name="onAccent">#131719</color>
+    <color name="onSurface">#E8F0F6</color>
+    <color name="onBackgroundFloating">#131719</color>
+    <color name="onError">#FFFFFF</color>
 
 </resources>

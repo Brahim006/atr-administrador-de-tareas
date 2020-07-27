@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Referencias para los estilos de la actividad ppal -->
+    <attr name="fragmentTabsStyle" format="reference"/>
+    <attr name="tabLayoutStyle" format="reference"/>
+
+    <!-- Referencias para los estilos de las tarjetas de tareas -->
+    <attr name="cardViewStyle" format="reference"/>
+    <attr name="titleTextViewStyle" format="reference"/>
+    <attr name="deleteTaskButtonStyle" format="reference"/>
+    <attr name="descriptionTextViewStyle" format="reference"/>
+    <attr name="editTaskButtonStyle" format="reference"/>
+    <attr name="changeStateSpinnerStyle" format="reference"/>
+
+    <!-- Referencias para los estilos de la actividad de creación/edición de tareas -->
+    <attr name="manipulateTaskActivityStyle" format="reference"/>
+    <attr name="titleEditViewStyle" format="reference"/>
+    <attr name="descriptionEditViewStyle" format="reference"/>
+    <attr name="taskStateLabelStyle" format="reference"/>
+    <attr name="createTaskButtonStyle" format="reference"/>
+
+</resources>

@@ -9,10 +9,12 @@
     android:orientation="vertical"
     android:paddingVertical="20dp"
     android:paddingHorizontal="30dp"
+    style="?manipulateTaskActivityStyle"
     tools:context=".gui.ManipulateTaskActivity">
 
     <EditText
         android:id="@+id/newTaskTitle"
+        style="?titleEditViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -43,6 +45,7 @@
 
         <TextView
             android:id="@+id/textView"
+            style="?taskStateLabelStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -56,6 +59,7 @@
 
         <Spinner
             android:id="@+id/manipulateTaskSpinner"
+            style="?changeStateSpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -67,6 +71,7 @@
 
         <Button
             android:id="@+id/addTasKButton"
+            style="?createTaskButtonStyle"
             android:layout_width="33dp"
             android:layout_height="40dp"
             android:layout_marginStart="28dp"
@@ -74,8 +79,8 @@
             android:onClick="onClickAddTaskButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/selectStateButton"
-            app:layout_constraintTop_toTopOf="@+id/selectStateButton"
+            app:layout_constraintStart_toEndOf="@+id/manipulateTaskSpinner"
+            app:layout_constraintTop_toTopOf="@+id/manipulateTaskSpinner"
             app:layout_constraintVertical_bias="0.666" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
