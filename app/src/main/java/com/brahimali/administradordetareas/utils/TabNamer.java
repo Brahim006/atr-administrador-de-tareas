@@ -26,19 +26,13 @@ public class TabNamer {
 
         int tabNameID = R.string.tab_all;
 
-        switch (tabCode){
-            case 1:
-                tabNameID = R.string.state_1;
-                break;
-            case 2:
-                tabNameID = R.string.state_2;
-                break;
-            case 3:
-                tabNameID = R.string.state_3;
-                break;
+        if(tabNameID == 0){
+            return context.getResources().getString(tabNameID);
         }
+        // En caso de que el código no corresponda a la tabla general
+        String[] arrStates = context.getResources().getStringArray(R.array.valid_states_array);
+        return arrStates[tabNameID];
 
-        return context.getResources().getString(tabNameID);
     }
 
 }
